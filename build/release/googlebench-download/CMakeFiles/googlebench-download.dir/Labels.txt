@@ -1,0 +1,14 @@
+# Target labels
+ googlebench-download
+# Source files and their labels
+/home/v/Desktop/value/build/release/googlebench-download/CMakeFiles/googlebench-download
+/home/v/Desktop/value/build/release/googlebench-download/CMakeFiles/googlebench-download.rule
+/home/v/Desktop/value/build/release/googlebench-download/CMakeFiles/googlebench-download-complete.rule
+/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-install.rule
+/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-mkdir.rule
+/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-download.rule
+/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-patch.rule
+/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-configure.rule
+/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-build.rule
+/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-test.rule
+/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-skip-update.rule
