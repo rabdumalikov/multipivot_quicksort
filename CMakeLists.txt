@@ -39,7 +39,11 @@ download_project(PROJ                googlebench
                  ${UPDATE_DISCONNECTED_IF_AVAILABLE}
 )
 
-#find_package(benchmark REQUIRED)
+find_package(Boost 1.71.0)
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+endif()
+
 #add_subdirectory(benchmark)
 
 # Disable building tests for GoogleBenchmark
