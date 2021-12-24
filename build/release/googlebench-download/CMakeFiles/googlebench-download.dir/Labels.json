@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/CMakeFiles/googlebench-download"
+		},
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/CMakeFiles/googlebench-download.rule"
+		},
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/CMakeFiles/googlebench-download-complete.rule"
+		},
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-install.rule"
+		},
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-mkdir.rule"
+		},
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-download.rule"
+		},
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-patch.rule"
+		},
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-configure.rule"
+		},
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-build.rule"
+		},
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-test.rule"
+		},
+		{
+			"file" : "/home/v/Desktop/value/build/release/googlebench-download/googlebench-download-prefix/src/googlebench-download-stamp/googlebench-download-skip-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"googlebench-download"
+		],
+		"name" : "googlebench-download"
+	}
+}

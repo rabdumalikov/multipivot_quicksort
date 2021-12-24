@@ -1,0 +1,1 @@
+/usr/bin/clang++-10   -stdlib=libc++ -O3 -DNDEBUG   -stdlib=libc++ -lc++abi CMakeFiles/benchmark_qs.dir/benchmarks/qs_benchmarks.cpp.o  -o benchmark_qs  googlebench-build/src/libbenchmark.a -pthread /usr/lib/x86_64-linux-gnu/librt.so 

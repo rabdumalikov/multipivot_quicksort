@@ -1,0 +1,11 @@
+# Hashes of file build rules.
+de6f0479e5e8724ee634629ada3c4ec0 CMakeFiles/catchtest-download
+a2e9d98a6f6d27847150c52c96746386 CMakeFiles/catchtest-download-complete
+2480a4ffde9a75337b1680f880b0f8f3 catchtest-download-prefix/src/catchtest-download-stamp/catchtest-download-build
+e15d0e22e1129a4c2e3ae3347ec62f72 catchtest-download-prefix/src/catchtest-download-stamp/catchtest-download-configure
+c8d92705ffd4438ae656b28b09595759 catchtest-download-prefix/src/catchtest-download-stamp/catchtest-download-download
+2a2f85bc94821a91d2efbe19215588a9 catchtest-download-prefix/src/catchtest-download-stamp/catchtest-download-install
+010976edbf0cbbd4a5ea0d5d20e80a8b catchtest-download-prefix/src/catchtest-download-stamp/catchtest-download-mkdir
+575ed91e958d636a880e84cf8771c80c catchtest-download-prefix/src/catchtest-download-stamp/catchtest-download-patch
+6cb3f99b99dcd03181db18828ded8e66 catchtest-download-prefix/src/catchtest-download-stamp/catchtest-download-skip-update
+a924b42e5d3bd912588572b454a1e038 catchtest-download-prefix/src/catchtest-download-stamp/catchtest-download-test
