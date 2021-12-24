@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16.3)
 
 project(qs)
 
-add_compile_options( -std=c++14 )
+add_compile_options( -std=c++20 )
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
     message("ESWITCH Debug.build Compiler=${CMAKE_CXX_COMPILER_ID}")
@@ -58,6 +58,7 @@ endif()
 add_executable(test_qs tests/qs_tests.cpp)
 target_include_directories(test_qs PUBLIC $<BUILD_INTERFACE:${qs_SOURCE_DIR}/src>)
 target_include_directories(test_qs PUBLIC $<BUILD_INTERFACE:${catchtest_SOURCE_DIR}/single_include/>)
+target_sources(test_qs PUBLIC src/qs.cpp src/qs.hpp)
 
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

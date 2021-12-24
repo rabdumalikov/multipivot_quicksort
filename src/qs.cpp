@@ -288,52 +288,6 @@ std::vector<int> general_partition( std::vector<int> & arr, int l, int r, std::v
     return std::move( pivots );
 }
 
-#include <random>
-
-std::vector<int> getRandomList( int n )
-{
-    std::random_device rd; // obtain a random number from hardware
-    std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(0, n*n); // define the range
-
-    std::vector<int> output;
-    output.reserve( n );
-
-    for(int i=0; i<n; ++i)
-        output.push_back( distr(gen) );
-
-    return output;
-}
-
-bool test_partitioning()
-{
-    for( int i = 0; i < 100; ++i )
-    {
-        std::vector< int > v = getRandomList( 50 );
-
-        auto l = get_pivot( v, 0, v.size() - 1, 4 );
-        
-        general_partition( v, 0, v.size() - 1,  l );
-
-        for( auto pivot : l )
-        {
-            for( int j = 0; j <= pivot; ++j )
-            {
-                if( v[pivot] < v[j] ) { printf( "Error" ); return false; }
-            }
-        }
-
-        auto lastIdx = *(l.rbegin());
-
-        for( auto k = lastIdx+1; k < v.size(); ++k )
-        {
-            if( !(v[k] > v[lastIdx]) ) { printf( "Error" ); return false; }
-        }
-    }
-
-    return true;
-}
-
 void __quicksort( std::vector< int > & arr, int l, int r, int num_pivots )
 {
     //std::cout << "L=" << l << " R=" << r << std::endl;
@@ -393,54 +347,3 @@ void quicksort( std::vector< int > & arr, int num_pivots )
 
     __quicksort(arr, 0, arr.size() - 1, num_pivots );
 }
-
-#include <chrono>
-
-
-bool test_measure() {
-    
-    for( int np = 1; np <= 10000; ++np ) {
-        double total_duration = 0.0;
-        int num_durations = 0;
-        
-        for( int i = 1; i < 30; ++i ) {
-            std::vector< int > v = getRandomList( 100000 );
-
-            std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-            quicksort( v, np );
-            
-            // std::qsort(
-            //     v.data(),
-            //     v.size(),
-            //     sizeof(int),
-            //     [](const void* x, const void* y) {
-            //         return ( *(int*)x - *(int*)y );
-            //     });
-            
-            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-            if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
-            {
-                std::cout << "Failed to sort!!!" << std::endl;
-                return false;
-            }
-            
-            total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-            
-            ++num_durations;
-            
-        }
-
-        std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
-    }
-    
-    return true;
-}
-
-int foo()
-{
-    test_measure();
-    return 1;
-}
-
