@@ -1,3 +1,0 @@
-/home/v/Desktop/value/build/release/catchtest-download/CMakeFiles/rebuild_cache.dir
-/home/v/Desktop/value/build/release/catchtest-download/CMakeFiles/edit_cache.dir
-/home/v/Desktop/value/build/release/catchtest-download/CMakeFiles/catchtest-download.dir

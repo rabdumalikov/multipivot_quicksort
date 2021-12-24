@@ -1,1 +1,0 @@
-/usr/bin/clang++-10   -stdlib=libc++ -O3 -DNDEBUG   -stdlib=libc++ -lc++abi CMakeFiles/test_qs.dir/tests/qs_tests.cpp.o  -o test_qs 
