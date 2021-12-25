@@ -54,12 +54,14 @@ void printPivots( const std::vector< int > & arr, const std::vector< int > & piv
     std::cout << "\n\n";
 }
 
-std::vector<int> sort_pivots( std::vector<int> & arr, int l, int r, const std::vector<int> & pivots )
+std::vector<int> sort_pivots( std::vector<int> & arr, int start, int end, std::vector<int> && pivots )
 {
+    std::sort( std::begin( pivots ), std::end( pivots ) );
+   
     std::vector<int> new_pivots;
     new_pivots.reserve( pivots.size() );
 
-    int first_pivot = l;
+    int first_pivot = start;
     for( auto p : pivots )
     {
         new_pivots.push_back( first_pivot );
@@ -69,7 +71,7 @@ std::vector<int> sort_pivots( std::vector<int> & arr, int l, int r, const std::v
         ++first_pivot;
     }
     
-    auto iter = std::begin( arr ) + l;
+    auto iter = std::begin( arr ) + start;
     
     std::sort( iter, iter + pivots.size() );
     
@@ -104,7 +106,7 @@ std::vector< int > get_pivot( std::vector< int > & arr, int l, int r, int n )
     }
     
     // sorting part
-    pivots = sort_pivots( arr, l, r, pivots );
+    pivots = sort_pivots( arr, l, r, std::move(pivots) );
 
     //printPivots( arr, pivots );
     
@@ -218,71 +220,14 @@ std::vector<int> general_partition( std::vector<int> & arr, int l, int r, std::v
                     }
                     
                     if( h == k ) break;
-                    
-//                    else {
-//                        std::swap( arr[ pivots[h] + 1 ], arr[i] );
-//                        std::swap( arr[ pivots[h] ], arr[ pivots[h] + 1 ] );
-//                        new_i = h;
-//                        pivots[h] += 1;
-//                        printList( arr, pivots, new_i, "int_swap:" );
-//                    }
+
                 }
-                
-                //std::swap( arr[ pivots[k] + 1 ], arr[i] );
-                //std::swap( arr[ pivots[k] ], arr[ pivots[k] + 1 ] );
-                
-                ///std::cout << "value_sector-1=" << value_sector-1 << " k=" << k << std::endl;
-                
-                //for( int j = k; j < value_sector-1; ++j )
-                //{
-                //    pivots[j] += 1;
-                //}
-                
-                ///printList( arr, pivots, -1, "after_swap:" );
 
             }
             
             break;
         }
 
-        // int index = -1;
-
-        // for( int k = 0; k < lq.size(); ++k ) {
-        //     if( lq[k] && gt[k] ) {
-        //         index = k;
-        //         break;
-        //     }
-        // }
-
-        // //std::cout << "Value=" << value << ", i=" << i << " sect=" << value_sector << " idx=" << index << std::endl;
-
-        // if( index == -1 ) exit(-1);
-
-        // if( index >= pivots.size() )
-        // {
-        //     auto lidx = *pivots.rbegin();
-        //     if( lidx > i )
-        //     {
-        //         // insert after last pivot
-        //         arr.erase( std::begin(arr) + i );
-        //         arr.push_back( value );
-        //     }
-        // }
-        // else {
-        //     // insert before the pivot
-        //     arr.erase( std::begin(arr) + i );
-        //     arr.insert( std::begin( arr ) + pivots[index], value );
-            
-        //     if( value_sector-1-index > 0 )
-        //     {
-        //         i--;
-        //     }
-        // }
-
-        // for( int j = index; j < value_sector-1; ++j )
-        // {
-        //     pivots[j] += 1;
-        // }
     }
     
     return std::move( pivots );
@@ -328,8 +273,8 @@ void __quicksort( std::vector< int > & arr, int l, int r, int num_pivots )
  Tasks:
  1. Support visual studio
  2. Test coverage
- 2.1. I will set up project
- 3. Fix bug on linux
+ 2.1. I will set up project - DONE
+ 3. Fix bug on linux - DONE
  4. Improve performance( mainly for paper )
  5. Implement counting of number swaps and comparisons
  6. Vargring to check all the cache misses

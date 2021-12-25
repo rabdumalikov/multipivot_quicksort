@@ -35,48 +35,148 @@ std::vector<int> getRandomList( int n )
     return output;
 }
 
-TEST_CASE( "qs::range", "" ) 
+void printList( const std::vector< int > & pivots ) {
+    for( auto p : pivots )
+        std::cout << p << ", ";
+    std::cout << std::endl;
+}
+
+// TEST_CASE( "qs::range", "" ) 
+// {
+//     using namespace std;
+
+//     SECTION( "inside_range" ) {
+//         for( int np = 1; np <= 10000; ++np ) {
+//             double total_duration = 0.0;
+//             int num_durations = 0;
+            
+//             for( int i = 1; i < 30; ++i ) {
+//                 std::vector< int > v = getRandomList( 300000 );
+
+//                 std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+//                 quicksort( v, np );
+                
+//                 // std::qsort(
+//                 //     v.data(),
+//                 //     v.size(),
+//                 //     sizeof(int),
+//                 //     [](const void* x, const void* y) {
+//                 //         return ( *(int*)x - *(int*)y );
+//                 //     });
+                
+//                 std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+//                 if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
+//                 {
+//                     std::cout << "Failed to sort!!!" << std::endl;
+//                     break;
+//                 }
+                
+//                 total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+                
+//                 ++num_durations;
+                
+//             }
+
+//             std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
+//         }
+
+//         REQUIRE( true );
+//     }
+// }
+
+TEST_CASE( "sort_pivots_1", "" ) 
 {
     using namespace std;
 
-    SECTION( "inside_range" ) {
-        for( int np = 1; np <= 10000; ++np ) {
-            double total_duration = 0.0;
-            int num_durations = 0;
+    SECTION( "sort_pivots" ) {
+        vector< int > values = { 1, 2, 3, 4, 5, 7, 6 };
+        vector< int > pivots = {6};
+        const auto results = sort_pivots( values, 0, values.size(), std::move(pivots) );
+
+        REQUIRE( values == vector<int>{ 6, 2, 3, 4, 5, 7, 1  } );
+        REQUIRE( results == vector<int>{ 0 } );
+    }
+}
+
+TEST_CASE( "sort_pivots_2", "" ) 
+{
+    using namespace std;
+
+    SECTION( "all_permutations" ) {
+        vector< int > pivots = {5,6};
+        do {
+            //printList( pivots );
             
-            for( int i = 1; i < 30; ++i ) {
-                std::vector< int > v = getRandomList( 100000 );
+            vector< int > values = { 1, 2, 3, 4, 5, 7, 6 };
+            
+            auto ps = pivots;
+            const auto results = sort_pivots( values, 0, values.size(), std::move(ps) );
 
-                std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+            REQUIRE( values == vector<int>{ 6, 7, 3, 4, 5, 1, 2} );
+            REQUIRE( results == vector<int>{ 0, 1 } );
+        } while( std::next_permutation(std::begin(pivots), std::end(pivots)) );
+    }
+}
 
-                quicksort( v, np );
-                
-                // std::qsort(
-                //     v.data(),
-                //     v.size(),
-                //     sizeof(int),
-                //     [](const void* x, const void* y) {
-                //         return ( *(int*)x - *(int*)y );
-                //     });
-                
-                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+TEST_CASE( "sort_pivots_3", "" ) 
+{
+    using namespace std;
 
-                if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
-                {
-                    std::cout << "Failed to sort!!!" << std::endl;
-                    break;
-                }
-                
-                total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-                
-                ++num_durations;
-                
-            }
+    SECTION( "all_permutations" ) {
+        vector< int > pivots = {0, 3, 6};
+        do {
+            //printList( pivots );
+            
+            vector< int > values = { 4, 2, 3, 6, 5, 7, 1 };
 
-            std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
-        }
+            auto ps = pivots;
+            const auto results = sort_pivots( values, 0, values.size(), std::move(ps) );
 
-        REQUIRE( true );
+            REQUIRE( values == vector<int>{ 1, 4, 6, 2, 5, 7, 3 } );
+            REQUIRE( results == vector<int>{ 0, 1, 2 } );
+        } while( std::next_permutation(std::begin(pivots), std::end(pivots)) );
+    }
+}
+
+TEST_CASE( "sort_pivots_4", "" ) 
+{
+    using namespace std;
+
+    SECTION( "all_permutations" ) {
+        vector< int > pivots = {0, 1, 2, 3};
+        do {
+            //printList( pivots );
+            
+            vector< int > values = { 4, 2, 3, 6, 5, 7, 1 };
+
+            auto ps = pivots;
+            const auto results = sort_pivots( values, 0, values.size(), std::move(ps) );
+
+            REQUIRE( values == vector<int>{ 2, 3, 4, 6, 5, 7, 1 } );
+            REQUIRE( results == vector<int>{ 0, 1, 2, 3 } );
+        } while( std::next_permutation(std::begin(pivots), std::end(pivots)) );
+    }
+}
+
+TEST_CASE( "sort_pivots_5", "" ) 
+{
+    using namespace std;
+
+    SECTION( "all_permutations" ) {
+        vector< int > pivots = {2, 3, 4, 5, 6};
+        do {
+            //printList( pivots );
+            
+            vector< int > values = { 4, 2, 3, 6, 5, 7, 1 };
+
+            auto ps = pivots;
+            const auto results = sort_pivots( values, 0, values.size(), std::move(ps) );
+
+            REQUIRE( values == vector<int>{ 1, 3, 5, 6, 7, 2, 4 } );
+            REQUIRE( results == vector<int>{ 0, 1, 2, 3, 4 } );
+        } while( std::next_permutation(std::begin(pivots), std::end(pivots)) );
     }
 }
 
