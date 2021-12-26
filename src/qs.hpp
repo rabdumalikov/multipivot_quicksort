@@ -3,6 +3,6 @@
 
 #include <vector>
 
-std::vector<int> sort_pivots( std::vector<int> & arr, int start, int end, std::vector<int> && pivots );
+std::vector<int64_t> sort_pivots( std::vector<int64_t> & arr, int64_t start, int64_t end, std::vector<int64_t> && pivots );
 
-void quicksort( std::vector< int > & arr, int num_pivots );
+void quicksort( std::vector< int64_t > & arr, int64_t num_pivots );

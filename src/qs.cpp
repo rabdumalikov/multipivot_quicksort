@@ -9,11 +9,11 @@
 #include <random>
 #include <qs.hpp>
 
-void printList( const std::vector< int > & list, const char * text = "" )
+void printList( const std::vector< int64_t > & list, const char * text = "" )
 {
     std::cout << text;
     
-    for( int i = 0; i < list.size(); ++i )
+    for( int64_t i = 0; i < list.size(); ++i )
     {
         std::cout << list[i] << " ";
     }
@@ -21,11 +21,11 @@ void printList( const std::vector< int > & list, const char * text = "" )
     printf( "\n\n" );
 }
 
-void printList( const std::vector< int > & list, const std::vector< int > & pivots, const int to_swap, const char * text = "" )
+void printList( const std::vector< int64_t > & list, const std::vector< int64_t > & pivots, const int64_t to_swap, const char * text = "" )
 {
     std::cout << text;
     
-    for( int i = 0; i < list.size(); ++i )
+    for( int64_t i = 0; i < list.size(); ++i )
     {
         auto iter = std::find( std::begin(pivots), std::end(pivots), i);
         if( iter != std::end(pivots) )
@@ -43,7 +43,7 @@ void printList( const std::vector< int > & list, const std::vector< int > & pivo
     printf( "\n\n" );
 }
 
-void printPivots( const std::vector< int > & arr, const std::vector< int > & pivots )
+void printPivots( const std::vector< int64_t > & arr, const std::vector< int64_t > & pivots )
 {
     std::cout << "PivotValues=";
     
@@ -54,14 +54,14 @@ void printPivots( const std::vector< int > & arr, const std::vector< int > & piv
     std::cout << "\n\n";
 }
 
-std::vector<int> sort_pivots( std::vector<int> & arr, int start, int end, std::vector<int> && pivots )
+std::vector<int64_t> sort_pivots( std::vector<int64_t> & arr, int64_t start, int64_t end, std::vector<int64_t> && pivots )
 {
     std::sort( std::begin( pivots ), std::end( pivots ) );
    
-    std::vector<int> new_pivots;
+    std::vector<int64_t> new_pivots;
     new_pivots.reserve( pivots.size() );
 
-    int first_pivot = start;
+    int64_t first_pivot = start;
     for( auto p : pivots )
     {
         new_pivots.push_back( first_pivot );
@@ -81,7 +81,7 @@ std::vector<int> sort_pivots( std::vector<int> & arr, int start, int end, std::v
 std::random_device rd; // obtain a random number from hardware
 std::mt19937 gen(rd()); // seed the generator
 
-std::vector< int > get_pivot( std::vector< int > & arr, int l, int r, int n )
+std::vector< int64_t > get_pivot( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t n )
 {
     std::uniform_int_distribution<> distr(l, r); // define the range
 
@@ -89,10 +89,10 @@ std::vector< int > get_pivot( std::vector< int > & arr, int l, int r, int n )
         n = abs(r-l)+1;
     }
     
-    std::vector< int > pivots;
+    std::vector< int64_t > pivots;
     pivots.reserve(n);
 
-    for( int i = 0; i < n; ++i )
+    for( int64_t i = 0; i < n; ++i )
     {
         while( true ) {
             auto new_pivot = distr(gen);
@@ -113,9 +113,9 @@ std::vector< int > get_pivot( std::vector< int > & arr, int l, int r, int n )
     return pivots;
 }
 
-std::vector< int > less_or_equal( const std::vector< int > & arr, const std::vector<int> & pivots, const int value )
+std::vector< int64_t > less_or_equal( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
 {
-    std::vector< int > output;
+    std::vector< int64_t > output;
     output.reserve( pivots.size() + 1 );
 
     for( const auto p : pivots ) {
@@ -127,9 +127,9 @@ std::vector< int > less_or_equal( const std::vector< int > & arr, const std::vec
     return output;
 }
 
-std::vector< int > greater( const std::vector< int > & arr, const std::vector<int> & pivots, const int value )
+std::vector< int64_t > greater( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
 {
-    std::vector< int > output;
+    std::vector< int64_t > output;
     output.reserve( pivots.size() + 1 );
     output.push_back( true );
 
@@ -141,13 +141,13 @@ std::vector< int > greater( const std::vector< int > & arr, const std::vector<in
 }
 
 
-std::vector<int> general_partition( std::vector<int> & arr, int l, int r, std::vector<int> & pivots )
+std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
 {
-    if( abs( l-r )+1 == 1 )
+    if( llabs( l-r )+1 == 1 )
     {
         return pivots;
     }
-    else if( abs(l-r)+1 == 2 )
+    else if( llabs(l-r)+1 == 2 )
     {
         if( arr[l] > arr[r] )
         {
@@ -165,7 +165,7 @@ std::vector<int> general_partition( std::vector<int> & arr, int l, int r, std::v
         return pivots;
     }
     
-    for( int i = l + pivots.size()-1; i <= r; ++i )
+    for( int64_t i = l + pivots.size()-1; i <= r; ++i )
     {
         auto iter = std::find( std::begin( pivots ), std::end( pivots ), i );
 
@@ -177,8 +177,8 @@ std::vector<int> general_partition( std::vector<int> & arr, int l, int r, std::v
         auto lq = less_or_equal( arr, pivots, value );
         auto gt = greater( arr, pivots, value );
         
-        int value_sector = pivots.size() + 1;
-        for( int j = 0; j < pivots.size(); j++ )
+        int64_t value_sector = pivots.size() + 1;
+        for( int64_t j = 0; j < pivots.size(); j++ )
         {
             if( i < pivots[j] )
             {
@@ -191,7 +191,7 @@ std::vector<int> general_partition( std::vector<int> & arr, int l, int r, std::v
         //printList( gt );
         //printList( arr );
 
-        for( int k = 0; k < lq.size(); ++k )
+        for( int64_t k = 0; k < lq.size(); ++k )
         {
             if( !(lq[k] && gt[k]) ) continue;
                 
@@ -200,8 +200,8 @@ std::vector<int> general_partition( std::vector<int> & arr, int l, int r, std::v
                 ///printList( arr, pivots, i, "before_swap:" );
                 
 
-                int new_i = i;
-                for( int h = pivots.size()-1; h >= k; --h )
+                int64_t new_i = i;
+                for( int64_t h = pivots.size()-1; h >= k; --h )
                 {
                     if( new_i == h+1 )
                     {
@@ -233,7 +233,7 @@ std::vector<int> general_partition( std::vector<int> & arr, int l, int r, std::v
     return std::move( pivots );
 }
 
-void __quicksort( std::vector< int > & arr, int l, int r, int num_pivots )
+void __quicksort( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t num_pivots )
 {
     //std::cout << "L=" << l << " R=" << r << std::endl;
     
@@ -285,7 +285,7 @@ void __quicksort( std::vector< int > & arr, int l, int r, int num_pivots )
  
  */
 
-void quicksort( std::vector< int > & arr, int num_pivots )
+void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
 {
     if( arr.size() <= 1 )
         return;
