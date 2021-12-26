@@ -41,50 +41,50 @@ void printList( const std::vector< int > & pivots ) {
     std::cout << std::endl;
 }
 
-// TEST_CASE( "qs::range", "" ) 
-// {
-//     using namespace std;
+TEST_CASE( "qs::range", "" ) 
+{
+    using namespace std;
 
-//     SECTION( "inside_range" ) {
-//         for( int np = 1; np <= 10000; ++np ) {
-//             double total_duration = 0.0;
-//             int num_durations = 0;
+    SECTION( "inside_range" ) {
+        for( int np = 1; np <= 10000; ++np ) {
+            double total_duration = 0.0;
+            int num_durations = 0;
             
-//             for( int i = 1; i < 30; ++i ) {
-//                 std::vector< int > v = getRandomList( 300000 );
+            for( int i = 1; i < 30; ++i ) {
+                std::vector< int > v = getRandomList( 300000 );
 
-//                 std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+                std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-//                 quicksort( v, np );
+                quicksort( v, np );
                 
-//                 // std::qsort(
-//                 //     v.data(),
-//                 //     v.size(),
-//                 //     sizeof(int),
-//                 //     [](const void* x, const void* y) {
-//                 //         return ( *(int*)x - *(int*)y );
-//                 //     });
+                // std::qsort(
+                //     v.data(),
+                //     v.size(),
+                //     sizeof(int),
+                //     [](const void* x, const void* y) {
+                //         return ( *(int*)x - *(int*)y );
+                //     });
                 
-//                 std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-//                 if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
-//                 {
-//                     std::cout << "Failed to sort!!!" << std::endl;
-//                     break;
-//                 }
+                if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
+                {
+                    std::cout << "Failed to sort!!!" << std::endl;
+                    break;
+                }
                 
-//                 total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+                total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
                 
-//                 ++num_durations;
+                ++num_durations;
                 
-//             }
+            }
 
-//             std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
-//         }
+            std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
+        }
 
-//         REQUIRE( true );
-//     }
-// }
+        REQUIRE( true );
+    }
+}
 
 TEST_CASE( "sort_pivots_1", "" ) 
 {
@@ -176,6 +176,66 @@ TEST_CASE( "sort_pivots_5", "" )
 
             REQUIRE( values == vector<int>{ 1, 3, 5, 6, 7, 2, 4 } );
             REQUIRE( results == vector<int>{ 0, 1, 2, 3, 4 } );
+        } while( std::next_permutation(std::begin(pivots), std::end(pivots)) );
+    }
+}
+
+TEST_CASE( "sort_pivots_narrow_range_middle", "" ) 
+{
+    using namespace std;
+
+    SECTION( "all_permutations" ) {
+        vector< int > pivots = {1, 2, 3};
+        do {
+            //printList( pivots );
+            
+            vector< int > values = { 4, 6, 2, 3, 5, 7, 1 };
+
+            auto ps = pivots;
+            const auto results = sort_pivots( values, 0, 4, std::move(ps) );
+
+            REQUIRE( values == vector<int>{ 2, 3, 6, 4, 5, 7, 1 } );
+            REQUIRE( results == vector<int>{ 0, 1, 2 } );
+        } while( std::next_permutation(std::begin(pivots), std::end(pivots)) );
+    }
+}
+
+TEST_CASE( "sort_pivots_narrow_range_begin", "" ) 
+{
+    using namespace std;
+
+    SECTION( "all_permutations" ) {
+        vector< int > pivots = {1, 2, 3};
+        do {
+            //printList( pivots );
+            
+            vector< int > values = { 4, 6, 2, 3, 5, 7, 1 };
+
+            auto ps = pivots;
+            const auto results = sort_pivots( values, 0, 3, std::move(ps) );
+
+            REQUIRE( values == vector<int>{ 2, 3, 6, 4, 5, 7, 1 } );
+            REQUIRE( results == vector<int>{ 0, 1, 2 } );
+        } while( std::next_permutation(std::begin(pivots), std::end(pivots)) );
+    }
+}
+
+TEST_CASE( "sort_pivots_narrow_range_end", "" ) 
+{
+    using namespace std;
+
+    SECTION( "all_permutations" ) {
+        vector< int > pivots = {4, 5, 6};
+        do {
+            //printList( pivots );
+            
+            vector< int > values = { 4, 6, 2, 3, 5, 7, 1 };
+
+            auto ps = pivots;
+            const auto results = sort_pivots( values, 3, 6, std::move(ps) );
+
+            REQUIRE( values == vector<int>{ 4, 6, 2, 1, 5, 7, 3 } );
+            REQUIRE( results == vector<int>{ 3, 4, 5 } );
         } while( std::next_permutation(std::begin(pivots), std::end(pivots)) );
     }
 }
