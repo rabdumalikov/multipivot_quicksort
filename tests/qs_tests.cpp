@@ -41,51 +41,6 @@ void printList( const std::vector< int64_t > & pivots ) {
     std::cout << std::endl;
 }
 
-TEST_CASE( "qs::range", "" ) 
-{
-    using namespace std;
-
-    SECTION( "inside_range" ) {
-        for( int64_t np = 1; np <= 10000; ++np ) {
-            double total_duration = 0.0;
-            int64_t num_durations = 0;
-            
-            for( int64_t i = 1; i < 30; ++i ) {
-                std::vector< int64_t > v = getRandomList( 300000 );
-
-                std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-                quicksort( v, np );
-                
-                // std::qsort(
-                //     v.data(),
-                //     v.size(),
-                //     sizeof(int64_t),
-                //     [](const void* x, const void* y) {
-                //         return ( *(int64_t*)x - *(int64_t*)y );
-                //     });
-                
-                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-                if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
-                {
-                    std::cout << "Failed to sort!!!" << std::endl;
-                    break;
-                }
-                
-                total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-                
-                ++num_durations;
-                
-            }
-
-            std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
-        }
-
-        REQUIRE( true );
-    }
-}
-
 TEST_CASE( "sort_pivots_1", "" ) 
 {
     using namespace std;
@@ -237,6 +192,101 @@ TEST_CASE( "sort_pivots_narrow_range_end", "" )
             REQUIRE( values == vector<int64_t>{ 4, 6, 2, 1, 5, 7, 3 } );
             REQUIRE( results == vector<int64_t>{ 3, 4, 5 } );
         } while( std::next_permutation(std::begin(pivots), std::end(pivots)) );
+    }
+}
+
+TEST_CASE( "get_pivots_narrow_pivot_numbers", "1-10" ) 
+{
+    using namespace std;
+
+    SECTION( "full size" ) {
+        vector< int64_t > values = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+        const auto results = get_pivot( values, 0, values.size()-1, values.size() );
+
+        REQUIRE( results.size() == (values.size()-1)/ 2 );
+        REQUIRE( results[0] >= 0 );        
+        REQUIRE( results[0] <= 4 );
+    }
+}
+
+TEST_CASE( "get_pivots_1", "1-10" ) 
+{
+    using namespace std;
+
+    SECTION( "0-9" ) {
+        vector< int64_t > values = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+        const auto results = get_pivot( values, 0, values.size()-1, 1 );
+
+        REQUIRE( results.size() == 1 );
+        REQUIRE( results[0] >= 0 );        
+        REQUIRE( results[0] <= 9 );
+    }
+
+    SECTION( "0-4" ) {
+        vector< int64_t > values = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+        const auto results = get_pivot( values, 0, 4, 1 );
+
+        REQUIRE( results.size() == 1 );
+        REQUIRE( results[0] >= 0 );        
+        REQUIRE( results[0] <= 4 );
+    }
+
+    SECTION( "5-9" ) {
+        vector< int64_t > values = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+        const auto results = get_pivot( values, 0, 4, 1 );
+
+        REQUIRE( results.size() == 1 );
+        REQUIRE( results[0] >= 0 );        
+        REQUIRE( results[0] <= 4 );
+    }
+}
+
+TEST_CASE( "qs::range", "" ) 
+{
+    using namespace std;
+
+    SECTION( "inside_range" ) {
+        for( int64_t np = 1; np <= 10000; ++np ) {
+            double total_duration = 0.0;
+            int64_t num_durations = 0;
+            
+            for( int64_t i = 1; i < 30; ++i ) {
+                std::vector< int64_t > v = getRandomList( 300000 );
+
+                std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+                quicksort( v, np );
+                
+                // std::qsort(
+                //     v.data(),
+                //     v.size(),
+                //     sizeof(int64_t),
+                //     [](const void* x, const void* y) {
+                //         return ( *(int64_t*)x - *(int64_t*)y );
+                //     });
+                
+                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+                if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
+                {
+                    std::cout << "Failed to sort!!!" << std::endl;
+                    break;
+                }
+                
+                total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+                
+                ++num_durations;
+                
+            }
+
+            std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
+        }
+
+        REQUIRE( true );
     }
 }
 

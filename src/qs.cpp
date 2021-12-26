@@ -85,8 +85,9 @@ std::vector< int64_t > get_pivot( std::vector< int64_t > & arr, int64_t l, int64
 {
     std::uniform_int_distribution<> distr(l, r); // define the range
 
-    if( abs(r-l)+1 <= n ) {
-        n = abs(r-l)+1;
+    if( abs(r-l) < n ) {
+        //std::cout << "Changed " << n << " to " << abs(r-l) << std::endl;  
+        n = round( (abs(r-l)) / 2 );
     }
     
     std::vector< int64_t > pivots;
@@ -248,6 +249,12 @@ void __quicksort( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t nu
         return;
     }
     //std::cout << "getting_pivots..." << std::endl;
+
+    // if( abs(r-l) <= 10 ) {
+    //     //std::cout << "r=" << r << ", l=" << l << std::endl;
+    //     std::sort( std::begin( arr )+l, std::begin( arr )+r );
+    //     return;
+    // }
 
     auto pivots = get_pivot( arr, l, r, num_pivots );
     
