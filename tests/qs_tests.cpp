@@ -245,50 +245,126 @@ TEST_CASE( "get_pivots_1", "1-10" )
     }
 }
 
-TEST_CASE( "qs::range", "" ) 
+TEST_CASE( "general_partition", "" ) 
 {
     using namespace std;
 
-    SECTION( "inside_range" ) {
-        for( int64_t np = 1; np <= 10000; ++np ) {
-            double total_duration = 0.0;
-            int64_t num_durations = 0;
+    SECTION( "1_pivot" ) {
+        vector< int64_t > values = { 1, 2, 3, 4, 6, 7, 8, 9, 10 };
+
+        do {
+            vector< int64_t > new_values;
+            new_values.push_back( 5 );
+
+            for( auto v : values ) new_values.push_back( v );
+
+            vector< int64_t > pivots = { 0 };
             
-            for( int64_t i = 1; i < 30; ++i ) {
-                std::vector< int64_t > v = getRandomList( 300000 );
+            const auto results = general_partition( new_values, 0, new_values.size()-1, pivots );
+            
+            REQUIRE( new_values[results[0]] == 5 );
 
-                std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-                quicksort( v, np );
-                
-                // std::qsort(
-                //     v.data(),
-                //     v.size(),
-                //     sizeof(int64_t),
-                //     [](const void* x, const void* y) {
-                //         return ( *(int64_t*)x - *(int64_t*)y );
-                //     });
-                
-                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-                if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
-                {
-                    std::cout << "Failed to sort!!!" << std::endl;
-                    break;
-                }
-                
-                total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-                
-                ++num_durations;
-                
+            for( int i = 0; i < new_values.size(); ++i )
+            {
+                if( i == results[0] ) continue;
+                if( i < results[0] )
+                    REQUIRE( new_values[i] <= new_values[results[0]] );
+                else if( i > results[0] )
+                    REQUIRE( new_values[i] > new_values[results[0]] );
             }
 
-            std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
-        }
+        } while( std::next_permutation(std::begin(values), std::end(values)) );
 
-        REQUIRE( true );
     }
 }
+
+TEST_CASE( "general_partition2", "" ) 
+{
+    using namespace std;
+
+    SECTION( "2_pivot" ) {
+        vector< int64_t > values = { 1, 2, 3, 4, 9, 10, 11 };
+
+        do {
+            vector< int64_t > new_values;
+            new_values.push_back( 5 );
+            new_values.push_back( 8 );
+
+            for( auto v : values ) new_values.push_back( v );
+
+            vector< int64_t > pivots = { 0, 1 };
+            
+            const auto results = general_partition( new_values, 0, new_values.size()-1, pivots );
+            
+            REQUIRE( new_values[results[0]] == 5 );
+            REQUIRE( new_values[results[1]] == 8 );
+
+            for( int i = 0; i < new_values.size(); ++i )
+            {
+                if( i == results[0] || i == results[1] ) continue;
+                
+                if( i < results[0] )
+                    REQUIRE( new_values[i] <= new_values[results[0]] );
+                else if( i > results[0] && i < results[1] )
+                {
+                    REQUIRE( new_values[i] > new_values[results[0]] );
+                    REQUIRE( new_values[i] <= new_values[results[1]] );
+                }
+                else if( i > results[0] && i > results[1] )
+                {
+                    REQUIRE( new_values[i] > new_values[results[1]] );
+                }
+            }
+
+        } while( std::next_permutation(std::begin(values), std::end(values)) );
+
+    }
+}
+
+// TEST_CASE( "qs::range", "" ) 
+// {
+//     using namespace std;
+
+//     SECTION( "inside_range" ) {
+//         for( int64_t np = 1; np <= 10000; ++np ) {
+//             double total_duration = 0.0;
+//             int64_t num_durations = 0;
+            
+//             for( int64_t i = 1; i < 30; ++i ) {
+//                 std::vector< int64_t > v = getRandomList( 300000 );
+
+//                 std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+//                 quicksort( v, np );
+                
+//                 // std::qsort(
+//                 //     v.data(),
+//                 //     v.size(),
+//                 //     sizeof(int64_t),
+//                 //     [](const void* x, const void* y) {
+//                 //         return ( *(int64_t*)x - *(int64_t*)y );
+//                 //     });
+                
+//                 std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+//                 if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
+//                 {
+//                     std::cout << "Failed to sort!!!" << std::endl;
+//                     break;
+//                 }
+                
+//                 total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+                
+//                 ++num_durations;
+                
+//             }
+
+//             std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
+//         }
+
+//         REQUIRE( true );
+//     }
+// }
 
 // bool test_partitioning()
 // {
