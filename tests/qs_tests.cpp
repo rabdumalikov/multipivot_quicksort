@@ -321,6 +321,43 @@ TEST_CASE( "general_partition2", "" )
     }
 }
 
+TEST_CASE( "auxiliary_functions", "" ) 
+{
+
+    SECTION( "less_or_equal_1" ) {
+        std::vector< int64_t > values = { 1, 2, 3, 4, 9, 10, 11 };
+        std::vector< int64_t > pivots = { 0, 1, 2, 3, 4, 5, 6 };
+        int64_t val;
+        std::vector< int64_t > correctResults = { 1, 1, 1, 1, 1, 1, 1, 1 };
+        
+        int i =0;
+        for(auto v: values){
+            val=v;
+            auto results=less_or_equal(values,pivots,val);
+            REQUIRE(results==correctResults);
+            correctResults[i]=0;
+            i++;
+        }
+        
+    }
+    SECTION( "greater_1" ) {
+        std::vector< int64_t > values = { 1, 2, 3, 4, 9, 10, 11 };
+        std::vector< int64_t > pivots = { 0, 1, 2, 3, 4, 5, 6 };
+        int64_t val;
+        std::vector< int64_t > correctResults = { 1, 0, 0, 0, 0, 0, 0, 0 };
+        
+        int i =0;
+        for(auto v: values){
+            val=v;
+            auto results=greater(values,pivots,val);
+            REQUIRE(results==correctResults);
+            i++;
+            correctResults[i]=1;
+        }
+        
+    }
+}
+
 // TEST_CASE( "qs::range", "" ) 
 // {
 //     using namespace std;
