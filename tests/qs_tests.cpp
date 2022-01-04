@@ -358,6 +358,39 @@ TEST_CASE( "auxiliary_functions", "" )
     }
 }
 
+TEST_CASE( "quicksort", "" ) 
+{
+    using namespace std;
+
+    SECTION( "100_entries" ) {
+        for( int64_t np = 1; np <= 90; ++np ) {
+            std::vector< int64_t > v = getRandomList( 100 );            
+            quicksort( v, np );
+
+            REQUIRE( std::is_sorted( std::begin( v ), std::end( v ) ) );
+        }
+    }
+
+    SECTION( "1000_entries" ) {
+        for( int64_t np = 1; np <= 900; ++np ) {
+            std::vector< int64_t > v = getRandomList( 1000 );            
+            quicksort( v, np );
+
+            REQUIRE( std::is_sorted( std::begin( v ), std::end( v ) ) );
+        }
+    }
+
+    SECTION( "10000_entries" ) {
+        for( int64_t np = 1; np <= 50; ++np ) {
+            std::vector< int64_t > v = getRandomList( 10000 );            
+            quicksort( v, np );
+
+            REQUIRE( std::is_sorted( std::begin( v ), std::end( v ) ) );
+        }
+    }
+}
+
+
 // TEST_CASE( "qs::range", "" ) 
 // {
 //     using namespace std;
