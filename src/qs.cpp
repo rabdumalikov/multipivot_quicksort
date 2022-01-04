@@ -55,7 +55,7 @@ void printPivots( const std::vector< int64_t > & arr, const std::vector< int64_t
     std::cout << "\n\n";
 }
 
-std::vector<int64_t> sort_pivots( std::vector<int64_t> & arr, int64_t start, int64_t end, std::vector<int64_t> && pivots )
+inline std::vector<int64_t> sort_pivots( std::vector<int64_t> & arr, int64_t start, int64_t end, std::vector<int64_t> && pivots )
 {
     std::sort( std::begin( pivots ), std::end( pivots ) );
    
@@ -82,7 +82,7 @@ std::vector<int64_t> sort_pivots( std::vector<int64_t> & arr, int64_t start, int
 std::random_device rd; // obtain a random number from hardware
 std::mt19937 gen(rd()); // seed the generator
 
-std::vector< int64_t > get_pivot( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t n )
+inline std::vector< int64_t > get_pivot( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t n )
 {
     std::uniform_int_distribution<> distr(l, r); // define the range
 
@@ -115,7 +115,7 @@ std::vector< int64_t > get_pivot( std::vector< int64_t > & arr, int64_t l, int64
     return pivots;
 }
 
-std::vector< bool > less_or_equal( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
+inline std::vector< bool > less_or_equal( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
 {
     std::vector< bool > output( pivots.size() + 1, true );
 
@@ -132,7 +132,7 @@ std::vector< bool > less_or_equal( const std::vector< int64_t > & arr, const std
     return output;
 }
 
-std::vector< bool > greater( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
+inline std::vector< bool > greater( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
 {
     std::vector< bool > output( pivots.size() + 1, true );
 

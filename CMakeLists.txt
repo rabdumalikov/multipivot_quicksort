@@ -58,7 +58,7 @@ endif()
 add_executable(test_qs tests/qs_tests.cpp)
 target_include_directories(test_qs PUBLIC $<BUILD_INTERFACE:${qs_SOURCE_DIR}/src>)
 target_include_directories(test_qs PUBLIC $<BUILD_INTERFACE:${catchtest_SOURCE_DIR}/single_include/>)
-target_sources(test_qs PUBLIC src/qs.cpp src/qs.hpp)
+#target_sources(test_qs PUBLIC src/qs.cpp src/qs.hpp)
 
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -67,6 +67,7 @@ endif()
 
 add_executable(benchmark_qs benchmarks/qs_benchmarks.cpp)
 target_include_directories(benchmark_qs PUBLIC "${benchmark_INCLUDE_DIRS}")
+target_include_directories(benchmark_qs PUBLIC $<BUILD_INTERFACE:${qs_SOURCE_DIR}/src>)
 target_include_directories(benchmark_qs PUBLIC $<BUILD_INTERFACE:${googlebench_SOURCE_DIR}/include/>)
 target_link_libraries(benchmark_qs benchmark)
 
