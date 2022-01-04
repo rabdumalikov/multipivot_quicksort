@@ -323,12 +323,11 @@ TEST_CASE( "general_partition2", "" )
 
 TEST_CASE( "auxiliary_functions", "" ) 
 {
-
     SECTION( "less_or_equal_1" ) {
         std::vector< int64_t > values = { 1, 2, 3, 4, 9, 10, 11 };
         std::vector< int64_t > pivots = { 0, 1, 2, 3, 4, 5, 6 };
         int64_t val;
-        std::vector< int64_t > correctResults = { 1, 1, 1, 1, 1, 1, 1, 1 };
+        std::vector< bool > correctResults = { 1, 1, 1, 1, 1, 1, 1, 1 };
         
         int i =0;
         for(auto v: values){
@@ -344,7 +343,7 @@ TEST_CASE( "auxiliary_functions", "" )
         std::vector< int64_t > values = { 1, 2, 3, 4, 9, 10, 11 };
         std::vector< int64_t > pivots = { 0, 1, 2, 3, 4, 5, 6 };
         int64_t val;
-        std::vector< int64_t > correctResults = { 1, 0, 0, 0, 0, 0, 0, 0 };
+        std::vector< bool > correctResults = { 1, 0, 0, 0, 0, 0, 0, 0 };
         
         int i =0;
         for(auto v: values){
@@ -391,50 +390,50 @@ TEST_CASE( "quicksort", "" )
 }
 
 
-// TEST_CASE( "qs::range", "" ) 
-// {
-//     using namespace std;
+TEST_CASE( "qs::range", "" ) 
+{
+    using namespace std;
 
-//     SECTION( "inside_range" ) {
-//         for( int64_t np = 1; np <= 10000; ++np ) {
-//             double total_duration = 0.0;
-//             int64_t num_durations = 0;
+    SECTION( "inside_range" ) {
+        for( int64_t np = 1; np <= 10000; ++np ) {
+            double total_duration = 0.0;
+            int64_t num_durations = 0;
             
-//             for( int64_t i = 1; i < 30; ++i ) {
-//                 std::vector< int64_t > v = getRandomList( 300000 );
+            for( int64_t i = 1; i < 30; ++i ) {
+                std::vector< int64_t > v = getRandomList( 300000 );
 
-//                 std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+                std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-//                 quicksort( v, np );
+                quicksort( v, np );
                 
-//                 // std::qsort(
-//                 //     v.data(),
-//                 //     v.size(),
-//                 //     sizeof(int64_t),
-//                 //     [](const void* x, const void* y) {
-//                 //         return ( *(int64_t*)x - *(int64_t*)y );
-//                 //     });
+                // std::qsort(
+                //     v.data(),
+                //     v.size(),
+                //     sizeof(int64_t),
+                //     [](const void* x, const void* y) {
+                //         return ( *(int64_t*)x - *(int64_t*)y );
+                //     });
                 
-//                 std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-//                 if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
-//                 {
-//                     std::cout << "Failed to sort!!!" << std::endl;
-//                     break;
-//                 }
+                if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
+                {
+                    std::cout << "Failed to sort!!!" << std::endl;
+                    break;
+                }
                 
-//                 total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+                total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
                 
-//                 ++num_durations;
+                ++num_durations;
                 
-//             }
+            }
 
-//             std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
-//         }
+            std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
+        }
 
-//         REQUIRE( true );
-//     }
-// }
+        REQUIRE( true );
+    }
+}
 
 // bool test_partitioning()
 // {

@@ -6,6 +6,7 @@
 #include <algorithm>
 //#include <boost/range/irange.hpp>
 //#include <boost/range/algorithm.hpp>
+#include <boost/range/adaptors.hpp>
 #include <random>
 #include <qs.hpp>
 
@@ -114,28 +115,37 @@ std::vector< int64_t > get_pivot( std::vector< int64_t > & arr, int64_t l, int64
     return pivots;
 }
 
-std::vector< int64_t > less_or_equal( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
+std::vector< bool > less_or_equal( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
 {
-    std::vector< int64_t > output;
-    output.reserve( pivots.size() + 1 );
+    std::vector< bool > output( pivots.size() + 1, true );
+
+    int64_t index = 0;
 
     for( const auto p : pivots ) {
-        output.push_back( arr[p] >= value );
-    }
+        const auto res = arr[p] >= value;
 
-    output.push_back( true );
+        if( res ) break;
+
+        output[index++] = res;
+    }
     
     return output;
 }
 
-std::vector< int64_t > greater( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
+std::vector< bool > greater( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
 {
-    std::vector< int64_t > output;
-    output.reserve( pivots.size() + 1 );
-    output.push_back( true );
+    std::vector< bool > output( pivots.size() + 1, true );
 
-    for( const auto p : pivots ) {
-        output.push_back( arr[p] < value );
+    int64_t index = pivots.size();
+    
+    for( const auto p : pivots | boost::adaptors::reversed ) {
+        const auto res = arr[p] < value;
+        
+        // since all the pivot values are sorted, thus if value greater 
+        // then last pivot implies that for the remaining pivots it also greater
+        if( res ) break;
+        
+        output[index--] = res;
     }
 
     return output;
