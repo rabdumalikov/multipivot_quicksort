@@ -8,10 +8,7 @@
 
 #include "qs.cpp"
 #include <iostream>
-#include <list>
-#include <array>
 #include <vector>
-#include <string>
 #include <boost/range/adaptor/indexed.hpp>
 #include <chrono>
 

@@ -60,6 +60,9 @@ target_include_directories(test_qs PUBLIC $<BUILD_INTERFACE:${qs_SOURCE_DIR}/src
 target_include_directories(test_qs PUBLIC $<BUILD_INTERFACE:${catchtest_SOURCE_DIR}/single_include/>)
 #target_sources(test_qs PUBLIC src/qs.cpp src/qs.hpp)
 
+add_executable(main src/main.cpp)
+target_include_directories(main PUBLIC $<BUILD_INTERFACE:${qs_SOURCE_DIR}/src>)
+target_sources(main PUBLIC src/qs.cpp src/qs.hpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options( -Winline )
