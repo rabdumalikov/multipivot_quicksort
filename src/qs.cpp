@@ -151,21 +151,24 @@ inline std::vector< bool > greater( const std::vector< int64_t > & arr, const st
     return output;
 }
 
-inline int64_t find_value_sector( const std::vector<int64_t> & pivots, int64_t value_position )
-{
-    auto pivot_iter = std::find_if( std::begin(pivots), std::end(pivots), [value_position]( const auto & pivot ) 
-        {
-            return pivot > value_position;
-        } );
+// inline int64_t find_value_sector( const std::vector<int64_t> & pivots, int64_t value_position )
+// {
+//     auto pivot_iter = std::find_if( std::begin(pivots), std::end(pivots), [value_position]( const auto & pivot ) 
+//         {
+//             return pivot > value_position;
+//         } );
 
-    return pivot_iter - std::begin(pivots) + ( pivot_iter == std::end(pivots) ? 1 : 0 );
-} 
+//     return pivot_iter - std::begin(pivots) + ( pivot_iter == std::end(pivots) ? 1 : 0 );
+// } 
 
-inline int64_t identify_new_sector( const std::vector<bool> & lg, const std::vector<bool> & gt)
+inline int64_t identify_new_sector( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
 {
+    const auto lq = less_or_equal( arr, pivots, value );
+    const auto gt = greater( arr, pivots, value );
+
     int64_t index = 0;
 
-    for( const auto l : lg | boost::adaptors::indexed(0) )
+    for( const auto l : lq | boost::adaptors::indexed(0) )
     {
         const auto idx = l.index();
 
@@ -188,12 +191,7 @@ std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, i
         if( iter != std::end( pivots ) )
             continue;
         
-        const auto value = arr[i];
-
-        const auto lq = less_or_equal( arr, pivots, value );
-        const auto gt = greater( arr, pivots, value );
-        
-        const auto new_sector = identify_new_sector( lq, gt );
+        const auto new_sector = identify_new_sector( arr, pivots, arr[i] );
 
         int64_t new_i = i;
         for( const auto sector : boost::irange<int64_t>( new_sector, pivots.size() ) | boost::adaptors::reversed )
@@ -262,10 +260,10 @@ void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
  
  Tasks:
  1. Support visual studio
- 2. Test coverage
+ 2. Test coverage - DONE
  2.1. I will set up project - DONE
  3. Fix bug on linux - DONE
- 4. Improve performance( mainly for paper )
+ 4. Improve performance( mainly for paper ) - PARTIALLY DONE
  5. Implement counting of number swaps and comparisons
  6. Vargring to check all the cache misses
  7. Maybe dynamic pivoting would be interesting
