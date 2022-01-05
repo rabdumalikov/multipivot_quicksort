@@ -165,7 +165,7 @@ inline int64_t identify_new_sector( const std::vector<bool> & lg, const std::vec
 {
     int64_t index = 0;
 
-    for( const auto l : lg | boost::adaptors::indexed(1) )
+    for( const auto l : lg | boost::adaptors::indexed(0) )
     {
         const auto idx = l.index();
 
@@ -215,42 +215,43 @@ std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, i
         auto lq = less_or_equal( arr, pivots, value );
         auto gt = greater( arr, pivots, value );
         
-        const int64_t value_sector = find_value_sector( pivots, i );
+        //const int64_t value_sector = find_value_sector( pivots, i );
 
         //printList( lq );
         //printList( gt );
         //printList( arr );
 
-        const auto k = identify_new_sector( lq, gt );
+        const auto new_sector = identify_new_sector( lq, gt );
 
+        //std::cout << "Value=" << value_sector-new_sector-1 << std::endl;
+        //if( value_sector-new_sector-1 >= 0 )
+        //{
 
-        if( value_sector-k-1 )
+        ///printList( arr, pivots, i, "before_swap:" );                
+        int64_t new_i = i;
+        for( int64_t h = pivots.size()-1; h >= new_sector; --h )
         {
-            ///printList( arr, pivots, i, "before_swap:" );                
-            int64_t new_i = i;
-            for( int64_t h = pivots.size()-1; h >= k; --h )
+            if( new_i == h+1 )
             {
-                if( new_i == h+1 )
-                {
-                    std::swap( arr[ pivots[h] ], arr[new_i] );
-                    new_i = pivots[h];
-                    pivots[h] += 1;
-                    //printList( arr, pivots, new_i, "int_swap+:" );
-
-                }
-                else if( new_i > h ) {
-                    std::swap( arr[ pivots[h] + 1 ], arr[new_i] );
-                    std::swap( arr[ pivots[h] ], arr[ pivots[h] + 1 ] );
-                    new_i = pivots[h];
-                    pivots[h] += 1;
-                    //printList( arr, pivots, new_i, "int_swap:" );
-                }
-                
-                if( h == k ) break;
+                std::swap( arr[ pivots[h] ], arr[new_i] );
+                new_i = pivots[h];
+                pivots[h] += 1;
+                //printList( arr, pivots, new_i, "int_swap+:" );
 
             }
+            else if( new_i > h ) {
+                std::swap( arr[ pivots[h] + 1 ], arr[new_i] );
+                std::swap( arr[ pivots[h] ], arr[ pivots[h] + 1 ] );
+                new_i = pivots[h];
+                pivots[h] += 1;
+                //printList( arr, pivots, new_i, "int_swap:" );
+            }
+            
+            if( h == new_sector ) break;
 
         }
+
+        //}
 
     }
     
