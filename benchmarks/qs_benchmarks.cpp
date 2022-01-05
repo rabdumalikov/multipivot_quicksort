@@ -85,8 +85,37 @@ void general_partition_benchmark(benchmark::State& state)
 
 BENCHMARK(general_partition_benchmark);
 
+int compare_ints(const void* a, const void* b)
+{
+    int arg1 = *(const int*)a;
+    int arg2 = *(const int*)b;
+ 
+    if (arg1 < arg2) return -1;
+    if (arg1 > arg2) return 1;
+    return 0;
+}
 
-void quicksort_benchmark(benchmark::State& state)
+void native_quicksort_benchmark(benchmark::State& state)
+{
+    std::vector< int64_t > values;
+    values.reserve( 10 );
+
+    for( int64_t i = 11; i >= 0; --i )
+        values.push_back( i );
+
+    while (state.KeepRunning()) {
+        std::qsort(
+            values.data(),
+            values.size(),
+            sizeof(int64_t),
+            compare_ints);           
+        benchmark::DoNotOptimize(values);
+    }
+}
+
+BENCHMARK(native_quicksort_benchmark);
+
+void my_quicksort_benchmark(benchmark::State& state)
 {
     std::vector< int64_t > values;
     values.reserve( 10 );
@@ -100,7 +129,7 @@ void quicksort_benchmark(benchmark::State& state)
     }
 }
 
-BENCHMARK(quicksort_benchmark);
+BENCHMARK(my_quicksort_benchmark);
 
 
 void quicksort_1_pivot_benchmark(benchmark::State& state)

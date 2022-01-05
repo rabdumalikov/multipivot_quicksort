@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include "benchmark/benchmark.h"
 
 std::vector<int64_t> getRandomList( int64_t n )
 {
@@ -19,7 +20,25 @@ std::vector<int64_t> getRandomList( int64_t n )
     return output;
 }
 
-int main()
-{
+// int main()
+// {
+//     std::vector< int64_t > v = getRandomList( 100 );
+            
+//     quicksort( v, 1 );    
+// }
 
+
+void foo(benchmark::State& state)
+{
+    std::vector< int64_t > v = getRandomList( 100 );
+
+    while (state.KeepRunning()) {
+        quicksort( v, 1 );               
+        benchmark::DoNotOptimize(v);
+    }
 }
+
+BENCHMARK(foo);
+
+
+BENCHMARK_MAIN();

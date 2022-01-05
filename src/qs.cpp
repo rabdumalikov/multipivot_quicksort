@@ -151,6 +151,33 @@ inline std::vector< bool > greater( const std::vector< int64_t > & arr, const st
     return output;
 }
 
+inline int64_t find_value_sector( const std::vector<int64_t> & pivots, int64_t value_position )
+{
+    auto pivot_iter = std::find_if( std::begin(pivots), std::end(pivots), [value_position]( const auto & pivot ) 
+        {
+            return pivot > value_position;
+        } );
+
+    return pivot_iter - std::begin(pivots) + ( pivot_iter == std::end(pivots) ? 1 : 0 );
+} 
+
+inline int64_t identify_new_sector( const std::vector<bool> & lg, const std::vector<bool> & gt)
+{
+    int64_t index = 0;
+
+    for( const auto l : lg | boost::adaptors::indexed(1) )
+    {
+        const auto idx = l.index();
+
+        if( l.value() && gt[index] )
+        {
+            index = idx;
+            break;
+        } 
+    }
+
+    return index;
+}
 
 std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
 {
@@ -188,55 +215,41 @@ std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, i
         auto lq = less_or_equal( arr, pivots, value );
         auto gt = greater( arr, pivots, value );
         
-        int64_t value_sector = pivots.size() + 1;
-        for( int64_t j = 0; j < pivots.size(); j++ )
-        {
-            if( i < pivots[j] )
-            {
-                value_sector = j;
-                break;
-            }
-        }
+        const int64_t value_sector = find_value_sector( pivots, i );
 
         //printList( lq );
         //printList( gt );
         //printList( arr );
 
-        for( int64_t k = 0; k < lq.size(); ++k )
+        const auto k = identify_new_sector( lq, gt );
+
+
+        if( value_sector-k-1 )
         {
-            if( !(lq[k] && gt[k]) ) continue;
-                
-            if( value_sector-k-1 )
+            ///printList( arr, pivots, i, "before_swap:" );                
+            int64_t new_i = i;
+            for( int64_t h = pivots.size()-1; h >= k; --h )
             {
-                ///printList( arr, pivots, i, "before_swap:" );
-                
-
-                int64_t new_i = i;
-                for( int64_t h = pivots.size()-1; h >= k; --h )
+                if( new_i == h+1 )
                 {
-                    if( new_i == h+1 )
-                    {
-                        std::swap( arr[ pivots[h] ], arr[new_i] );
-                        new_i = pivots[h];
-                        pivots[h] += 1;
-                        //printList( arr, pivots, new_i, "int_swap+:" );
-
-                    }
-                    else if( new_i > h ) {
-                        std::swap( arr[ pivots[h] + 1 ], arr[new_i] );
-                        std::swap( arr[ pivots[h] ], arr[ pivots[h] + 1 ] );
-                        new_i = pivots[h];
-                        pivots[h] += 1;
-                        //printList( arr, pivots, new_i, "int_swap:" );
-                    }
-                    
-                    if( h == k ) break;
+                    std::swap( arr[ pivots[h] ], arr[new_i] );
+                    new_i = pivots[h];
+                    pivots[h] += 1;
+                    //printList( arr, pivots, new_i, "int_swap+:" );
 
                 }
+                else if( new_i > h ) {
+                    std::swap( arr[ pivots[h] + 1 ], arr[new_i] );
+                    std::swap( arr[ pivots[h] ], arr[ pivots[h] + 1 ] );
+                    new_i = pivots[h];
+                    pivots[h] += 1;
+                    //printList( arr, pivots, new_i, "int_swap:" );
+                }
+                
+                if( h == k ) break;
 
             }
-            
-            break;
+
         }
 
     }
@@ -282,6 +295,15 @@ void __quicksort( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t nu
         __quicksort(arr, pivots.back()+1, r, num_pivots);
 }
 
+void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
+{
+    if( arr.size() <= 1 )
+        return;
+
+    __quicksort(arr, 0, arr.size() - 1, num_pivots );
+}
+
+
 /* TODO:
  Problems:
  1. unknown crash on linux
@@ -301,11 +323,3 @@ void __quicksort( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t nu
  Rustam TODO: Tasks - [2.1, 3, 4 ]
  
  */
-
-void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
-{
-    if( arr.size() <= 1 )
-        return;
-
-    __quicksort(arr, 0, arr.size() - 1, num_pivots );
-}

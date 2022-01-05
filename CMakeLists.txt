@@ -8,7 +8,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     message("ESWITCH Debug.build Compiler=${CMAKE_CXX_COMPILER_ID}")
 ELSE()
     # -fno-omit-frame-pointer - use this flag for profiler 
-    add_compile_options( -O3 -Wall -pedantic -Wno-unused-lambda-capture )
+    add_compile_options( -O3 -Wall -pedantic -Wno-unused-lambda-capture -fno-exceptions -fno-rtti -Werror -fno-omit-frame-pointer )
     message("ESWITCH Release.build Compiler=${CMAKE_CXX_COMPILER_ID}")
 ENDIF()
 
@@ -61,8 +61,11 @@ target_include_directories(test_qs PUBLIC $<BUILD_INTERFACE:${catchtest_SOURCE_D
 #target_sources(test_qs PUBLIC src/qs.cpp src/qs.hpp)
 
 add_executable(main src/main.cpp)
+target_include_directories(main PUBLIC "${benchmark_INCLUDE_DIRS}")
 target_include_directories(main PUBLIC $<BUILD_INTERFACE:${qs_SOURCE_DIR}/src>)
+target_include_directories(main PUBLIC $<BUILD_INTERFACE:${googlebench_SOURCE_DIR}/include/>)
 target_sources(main PUBLIC src/qs.cpp src/qs.hpp)
+target_link_libraries(main benchmark)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options( -Winline )
