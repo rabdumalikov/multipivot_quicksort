@@ -4,7 +4,7 @@
 #include <iostream>
 //#include <boost/range.hpp>
 #include <algorithm>
-//#include <boost/range/irange.hpp>
+#include <boost/range/irange.hpp>
 //#include <boost/range/algorithm.hpp>
 #include <boost/range/adaptors.hpp>
 #include <random>
@@ -181,7 +181,7 @@ inline int64_t identify_new_sector( const std::vector<bool> & lg, const std::vec
 
 std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
 {
-    for( int64_t i = l + pivots.size()-1; i <= r; ++i )
+    for( const auto i : boost::irange<int64_t>( l + pivots.size()-1, r+1 ) )
     {
         const auto iter = std::find( std::begin( pivots ), std::end( pivots ), i );
 
@@ -196,21 +196,17 @@ std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, i
         const auto new_sector = identify_new_sector( lq, gt );
 
         int64_t new_i = i;
-        for( int64_t h = pivots.size()-1; h >= new_sector; --h )
+        for( const auto sector : boost::irange<int64_t>( new_sector, pivots.size() ) | boost::adaptors::reversed )
         {
-            if( new_i == h+1 )
-            {
-                std::swap( arr[ pivots[h] ], arr[new_i] );
-                new_i = pivots[h];
-                pivots[h] += 1;
+            auto & pivot( pivots[sector] );
 
-            }
-            else if( new_i > h ) {
-                std::swap( arr[ pivots[h] + 1 ], arr[new_i] );
-                std::swap( arr[ pivots[h] ], arr[ pivots[h] + 1 ] );
-                new_i = pivots[h];
-                pivots[h] += 1;
-            }        
+            if( new_i > sector+1 )
+                std::swap( arr[ pivot + 1 ], arr[new_i] );
+
+            std::swap( arr[ pivot ], arr[ pivot + 1 ] );
+            
+            new_i = pivot;
+            pivot += 1;
         }
     }
     
