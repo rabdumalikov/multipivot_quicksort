@@ -181,53 +181,20 @@ inline int64_t identify_new_sector( const std::vector<bool> & lg, const std::vec
 
 std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
 {
-    if( llabs( l-r )+1 == 1 )
-    {
-        return pivots;
-    }
-    else if( llabs(l-r)+1 == 2 )
-    {
-        if( arr[l] > arr[r] )
-        {
-            std::swap( arr[l], arr[r] );
-            return pivots;
-        }
-    }
-    
-    //printList(arr,"part1:");
-    
-    if( !(l + pivots.size() <= r) )
-    {
-        //std::cout << "No FOR_LOOP" << std::endl;
-        //exit(-1);
-        return pivots;
-    }
-    
     for( int64_t i = l + pivots.size()-1; i <= r; ++i )
     {
-        auto iter = std::find( std::begin( pivots ), std::end( pivots ), i );
+        const auto iter = std::find( std::begin( pivots ), std::end( pivots ), i );
 
         if( iter != std::end( pivots ) )
             continue;
         
         const auto value = arr[i];
 
-        auto lq = less_or_equal( arr, pivots, value );
-        auto gt = greater( arr, pivots, value );
+        const auto lq = less_or_equal( arr, pivots, value );
+        const auto gt = greater( arr, pivots, value );
         
-        //const int64_t value_sector = find_value_sector( pivots, i );
-
-        //printList( lq );
-        //printList( gt );
-        //printList( arr );
-
         const auto new_sector = identify_new_sector( lq, gt );
 
-        //std::cout << "Value=" << value_sector-new_sector-1 << std::endl;
-        //if( value_sector-new_sector-1 >= 0 )
-        //{
-
-        ///printList( arr, pivots, i, "before_swap:" );                
         int64_t new_i = i;
         for( int64_t h = pivots.size()-1; h >= new_sector; --h )
         {
@@ -236,7 +203,6 @@ std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, i
                 std::swap( arr[ pivots[h] ], arr[new_i] );
                 new_i = pivots[h];
                 pivots[h] += 1;
-                //printList( arr, pivots, new_i, "int_swap+:" );
 
             }
             else if( new_i > h ) {
@@ -244,15 +210,8 @@ std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, i
                 std::swap( arr[ pivots[h] ], arr[ pivots[h] + 1 ] );
                 new_i = pivots[h];
                 pivots[h] += 1;
-                //printList( arr, pivots, new_i, "int_swap:" );
-            }
-            
-            if( h == new_sector ) break;
-
+            }        
         }
-
-        //}
-
     }
     
     return std::move( pivots );
@@ -260,18 +219,16 @@ std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, i
 
 void __quicksort( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t num_pivots )
 {
-    //std::cout << "L=" << l << " R=" << r << std::endl;
-    
-    if( l >= r )
-        return;
-    else if( l + 1 == r )
+    if( l >= r ) return;
+
+    if( l + 1 == r )
     {
         if( arr[r] < arr[l] )
             std::swap(arr[r], arr[l]);
 
-        //printList( arr, "swap:" );
         return;
     }
+
     //std::cout << "getting_pivots..." << std::endl;
 
     // if( abs(r-l) <= 10 ) {
@@ -281,19 +238,16 @@ void __quicksort( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t nu
     // }
 
     auto pivots = get_pivot( arr, l, r, num_pivots );
-    
-    //std::cout << "getting_pivots..." << std::endl;
 
     pivots = general_partition( arr, l, r, pivots );
     
-    for( auto pivot : pivots )
+    for( const auto pivot : pivots )
     {
         __quicksort(arr, l, pivot - 1, num_pivots);
         l = pivot + 1;
     }
 
-    if( pivots.size() != 0 )
-        __quicksort(arr, pivots.back()+1, r, num_pivots);
+    __quicksort(arr, pivots.back()+1, r, num_pivots);
 }
 
 void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
