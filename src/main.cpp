@@ -24,7 +24,7 @@ std::vector<int64_t> getRandomList( int64_t n )
 // {
 //     std::vector< int64_t > v = getRandomList( 100 );
             
-//     quicksort( v, 1 );    
+//     quicksort( v, 3 );    
 // }
 
 
@@ -33,7 +33,7 @@ void foo(benchmark::State& state)
     std::vector< int64_t > v = getRandomList( 100 );
 
     while (state.KeepRunning()) {
-        quicksort( v, 1 );               
+        quicksort( v, 5 );               
         benchmark::DoNotOptimize(v);
     }
 }

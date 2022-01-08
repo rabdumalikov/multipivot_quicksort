@@ -151,16 +151,7 @@ inline std::vector< bool > greater( const std::vector< int64_t > & arr, const st
     return output;
 }
 
-// inline int64_t find_value_sector( const std::vector<int64_t> & pivots, int64_t value_position )
-// {
-//     auto pivot_iter = std::find_if( std::begin(pivots), std::end(pivots), [value_position]( const auto & pivot ) 
-//         {
-//             return pivot > value_position;
-//         } );
-
-//     return pivot_iter - std::begin(pivots) + ( pivot_iter == std::end(pivots) ? 1 : 0 );
-// } 
-
+// TODO: cover with test
 inline int64_t identify_new_sector( const std::vector< int64_t > & arr, const std::vector<int64_t> & pivots, const int64_t value )
 {
     const auto lq = less_or_equal( arr, pivots, value );
@@ -192,6 +183,10 @@ std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, i
             continue;
         
         const auto new_sector = identify_new_sector( arr, pivots, arr[i] );
+
+        // check if value already in right sector
+        if( new_sector == pivots.size() )
+            continue;
 
         int64_t new_i = i;
         for( const auto sector : boost::irange<int64_t>( new_sector, pivots.size() ) | boost::adaptors::reversed )
