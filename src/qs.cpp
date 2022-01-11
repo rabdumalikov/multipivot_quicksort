@@ -393,6 +393,67 @@ void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
     }
 }
 
+std::vector<int64_t> general_partition3( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
+{
+    int64_t current_pivot_index = 0;
+    
+    for( auto & pivot : pivots )
+    {
+        const auto pivot_value = arr[pivot];
+        
+        int64_t low_boundary = l;
+        
+        auto start_position = ( pivot-16 <= low_boundary ? low_boundary : pivot-16 );
+        
+        int64_t new_left_pivot_position = -1;
+        
+        // checking elements on left side of the pivot
+        for( int64_t i = start_position; i < pivot; ++i )
+        {
+            if( arr[i] > pivot_value && new_left_pivot_position == -1 )
+                new_left_pivot_position = i;
+            else
+                new_left_pivot_position = -1;
+        }
+        
+        int64_t high_boundary = r;
+        if( current_pivot_index+1 < pivots.size() )
+        {
+            high_boundary = pivots[current_pivot_index+1];
+        }
+        
+        auto end_position = ( pivot+16 >= high_boundary ? high_boundary : pivot+16 );
+
+        int64_t new_right_pivot_position = -1;
+                
+        // checking elements on left side of the pivot
+        for( int64_t i = pivot+1; i < end_position; ++i )
+        {
+            if( arr[i] <= pivot_value && new_right_pivot_position == -1 )
+                new_right_pivot_position = i;
+            else
+                new_right_pivot_position = -1;
+        }
+        
+        if( new_left_pivot_position >= new_right_pivot_position && new_left_pivot_position != -1 )
+        {
+            std::swap(arr[new_left_pivot_position], arr[pivot]);
+            pivot = new_left_pivot_position;
+        }
+        else if( new_right_pivot_position != -1 ){
+            std::swap(arr[new_right_pivot_position], arr[pivot]);
+            pivot = new_left_pivot_position;
+        }
+        
+        ++current_pivot_index;
+        
+        printPivots( arr, pivots );
+        printList( arr, pivots );
+    }
+    
+    return std::move( pivots );
+}
+
 // void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
 // {
 //     if( arr.size() <= 1 )
