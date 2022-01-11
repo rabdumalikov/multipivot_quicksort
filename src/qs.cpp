@@ -9,6 +9,7 @@
 #include <boost/range/adaptors.hpp>
 #include <random>
 #include <qs.hpp>
+#include <stack>
 
 void printList( const std::vector< int64_t > & list, const char * text = "" )
 {
@@ -87,7 +88,6 @@ inline std::vector< int64_t > get_pivot( std::vector< int64_t > & arr, int64_t l
     std::uniform_int_distribution<> distr(l, r); // define the range
 
     if( abs(r-l) < n ) {
-        //std::cout << "Changed " << n << " to " << abs(r-l) << std::endl;  
         n = round( (abs(r-l)) / 2 );
     }
     
@@ -173,7 +173,7 @@ inline int64_t identify_new_sector( const std::vector< int64_t > & arr, const st
     return index;
 }
 
-std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
+inline std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
 {
     for( const auto i : boost::irange<int64_t>( l + pivots.size()-1, r+1 ) )
     {
@@ -206,6 +206,126 @@ std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, i
     return std::move( pivots );
 }
 
+inline int64_t find_value_sector( const std::vector<int64_t> & pivots, int64_t value_position )
+{
+    auto pivot_iter = std::find_if( std::begin(pivots), std::end(pivots), [value_position]( const auto & pivot ) 
+        {
+            return pivot > value_position;
+        } );
+
+    return pivot_iter - std::begin(pivots) + ( pivot_iter == std::end(pivots) ? 1 : 0 );
+}
+
+inline void sort_pivots2( std::vector<int64_t> & arr, int64_t start, int64_t end, std::vector<int64_t> & pivots )
+{
+    std::sort( std::begin( pivots ), std::end( pivots ) );
+   
+    std::vector< int64_t > values;
+    values.reserve( pivots.size() );
+
+    for( const auto p : pivots ) {
+        values.push_back( arr[p] );
+    }
+
+    std::sort( std::begin( values ), std::end( values ) );
+    
+    for( auto entry : values | boost::adaptors::indexed(0) )
+    {
+        arr[pivots[entry.index()]] = entry.value();
+    }    
+}
+
+inline std::vector< int64_t > get_pivot2( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t n )
+{
+    std::uniform_int_distribution<> distr(l, r); // define the range
+
+    if( abs(r-l) < n ) {
+        //std::cout << "Changed " << n << " to " << abs(r-l) << std::endl;  
+        n = round( (abs(r-l)) / 2 );
+    }
+    
+    std::vector< int64_t > pivots;
+    pivots.reserve(n);
+
+    for( int64_t i = 0; i < n; ++i )
+    {
+        while( true ) {
+            auto new_pivot = distr(gen);
+
+            auto iter = std::find( std::begin( pivots ), std::end( pivots ), new_pivot );            
+            if( iter != std::end( pivots ) ) continue;
+            
+            auto iter2 = std::find( std::begin( pivots ), std::end( pivots ), new_pivot+1 );
+            if( iter2 != std::end( pivots ) ) continue;
+
+            auto iter3 = std::find( std::begin( pivots ), std::end( pivots ), new_pivot-1 );
+            if( iter3 != std::end( pivots ) ) continue;
+
+            pivots.push_back( new_pivot );
+            break;
+        }
+    }
+    
+    // sorting part
+    sort_pivots2( arr, l, r, pivots );
+    
+    return pivots;
+}
+
+std::vector<int64_t> general_partition2( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
+{
+    int64_t i = l;
+    int64_t pivot_boundary = 0;
+    int64_t pivot_id = 0;
+    int64_t after_pivot = -1;
+    int64_t prev_pivot = -1;
+
+    for( auto & pivot : pivots ) { 
+        
+        const auto pivot_value = arr[pivot];
+        
+        while( i < pivot )
+        {
+            if( arr[i] > pivot_value )
+            {                
+                if( pivot-1 > pivot_boundary )
+                {
+                    std::swap( arr[pivot], arr[pivot-1] );
+                    std::swap( arr[i], arr[pivot] );
+                    // updating pivot
+                    pivot -= 1;
+                }
+                else
+                {
+                    std::swap( arr[i], arr[pivot] );
+                    // updating pivot
+                    pivot -= 1;
+                }
+            }
+            else if( pivot_id != 0 )
+            {
+                std::swap( arr[after_pivot++], arr[i] );
+            }
+
+            ++i;
+        }
+
+        if( pivot_id != 0 )
+        {
+            std::swap( arr[prev_pivot], arr[after_pivot-1] );
+            pivots[pivot_id] = after_pivot-1;
+        }
+
+        prev_pivot = pivot;
+
+        after_pivot = pivot+1;
+        pivot_boundary = pivot+1;
+        pivot_id += 1;        
+    }
+
+    return std::move( pivots );
+}
+
 void __quicksort( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t num_pivots )
 {
     if( l >= r ) return;
@@ -218,13 +338,10 @@ void __quicksort( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t nu
         return;
     }
 
-    //std::cout << "getting_pivots..." << std::endl;
-
-    // if( abs(r-l) <= 10 ) {
-    //     //std::cout << "r=" << r << ", l=" << l << std::endl;
-    //     std::sort( std::begin( arr )+l, std::begin( arr )+r );
-    //     return;
-    // }
+    if( abs(r-l) <= 10 ) {
+        std::sort( std::begin( arr )+l, std::begin( arr )+r+1 );
+        return;
+    }
 
     auto pivots = get_pivot( arr, l, r, num_pivots );
 
@@ -239,13 +356,50 @@ void __quicksort( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t nu
     __quicksort(arr, pivots.back()+1, r, num_pivots);
 }
 
+struct stack_node {
+    int64_t l;
+    int64_t r;
+};
+
 void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
 {
-    if( arr.size() <= 1 )
-        return;
+    std::stack< stack_node > stck;
+    stck.push( stack_node{0, static_cast<int64_t>(arr.size() - 1) } );
 
-    __quicksort(arr, 0, arr.size() - 1, num_pivots );
+    while( !stck.empty() ) 
+    {
+        auto sn = stck.top();
+        stck.pop();
+
+        int64_t l = sn.l;
+        int64_t r = sn.r;
+        
+        if( abs(r-l) <= 10 ) {
+            std::sort( std::begin( arr )+l, std::begin( arr )+r+1 );
+            continue;
+        }
+
+        auto pivots = get_pivot( arr, l, r, num_pivots );    
+        pivots = general_partition( arr, l, r, pivots );
+
+        for( const auto pivot : pivots )
+        {
+            stck.push( stack_node{l, pivot - 1} );
+
+            l = pivot + 1;
+        }
+
+        stck.push( stack_node{pivots.back()+1, r} );     
+    }
 }
+
+// void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
+// {
+//     if( arr.size() <= 1 )
+//         return;
+
+//     __quicksort(arr, 0, arr.size() - 1, num_pivots );
+// }
 
 
 /* TODO:

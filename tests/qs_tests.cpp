@@ -38,6 +38,20 @@ void printList( const std::vector< int64_t > & pivots ) {
     std::cout << std::endl;
 }
 
+TEST_CASE( "sort_pivots2", "" ) 
+{
+    using namespace std;
+
+    SECTION( "sort_pivots" ) {
+        vector<int64_t> values { 4, 1, 2, 0, 1 };
+        vector<int64_t> pivots { 4, 2, 0, 3 };
+        sort_pivots2( values, 0, values.size(), pivots );
+
+        REQUIRE( values == vector<int64_t>{ 0, 1, 1, 2, 4 } );
+        REQUIRE( pivots == vector<int64_t>{ 0, 2, 3, 4 } );
+    }
+}
+
 TEST_CASE( "sort_pivots_1", "" ) 
 {
     using namespace std;
