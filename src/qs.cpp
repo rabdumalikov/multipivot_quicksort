@@ -10,6 +10,8 @@
 #include <random>
 #include <qs.hpp>
 #include <stack>
+#include "PredictableRandomGenerator.hpp"
+
 
 void printList( const std::vector< int64_t > & list, const char * text = "" )
 {
@@ -56,6 +58,9 @@ void printPivots( const std::vector< int64_t > & arr, const std::vector< int64_t
     std::cout << "\n\n";
 }
 
+int64_t Number_of_comparisons = 0;
+int64_t Number_of_swaps = 0;
+
 inline std::vector<int64_t> sort_pivots( std::vector<int64_t> & arr, int64_t start, int64_t end, std::vector<int64_t> && pivots )
 {
     std::sort( std::begin( pivots ), std::end( pivots ) );
@@ -73,6 +78,8 @@ inline std::vector<int64_t> sort_pivots( std::vector<int64_t> & arr, int64_t sta
         ++first_pivot;
     }
     
+    Number_of_swaps += first_pivot - start;
+
     auto iter = std::begin( arr ) + start;
     
     std::sort( iter, iter + pivots.size() );
@@ -80,12 +87,15 @@ inline std::vector<int64_t> sort_pivots( std::vector<int64_t> & arr, int64_t sta
     return new_pivots;
 }
 
-std::random_device rd; // obtain a random number from hardware
-std::mt19937 gen(rd()); // seed the generator
+static std::random_device rd; // obtain a random number from hardware
+static std::mt19937 gen(rd()); // seed the generator
+
 
 inline std::vector< int64_t > get_pivot( std::vector< int64_t > & arr, int64_t l, int64_t r, int64_t n )
 {
-    std::uniform_int_distribution<> distr(l, r); // define the range
+    RandomNumberStream prg(n);
+
+    //std::uniform_int_distribution<> distr(l, r); // define the range
 
     if( abs(r-l) < n ) {
         n = round( (abs(r-l)) / 2 );
@@ -97,7 +107,7 @@ inline std::vector< int64_t > get_pivot( std::vector< int64_t > & arr, int64_t l
     for( int64_t i = 0; i < n; ++i )
     {
         while( true ) {
-            auto new_pivot = distr(gen);
+            auto new_pivot = prg.RandomInteger(l,r);//distr(gen);
             auto iter = std::find( std::begin( pivots ), std::end( pivots ), new_pivot );
             
             if( iter != std::end( pivots ) ) continue;
@@ -128,6 +138,8 @@ inline std::vector< bool > less_or_equal( const std::vector< int64_t > & arr, co
 
         output[index++] = res;
     }
+
+    Number_of_comparisons += index;
     
     return output;
 }
@@ -147,6 +159,8 @@ inline std::vector< bool > greater( const std::vector< int64_t > & arr, const st
         
         output[index--] = res;
     }
+
+    Number_of_comparisons += pivots.size() - index;
 
     return output;
 }
@@ -173,7 +187,7 @@ inline int64_t identify_new_sector( const std::vector< int64_t > & arr, const st
     return index;
 }
 
-inline std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
+std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
 {
     for( const auto i : boost::irange<int64_t>( l + pivots.size()-1, r+1 ) )
     {
@@ -194,9 +208,13 @@ inline std::vector<int64_t> general_partition( std::vector<int64_t> & arr, int64
             auto & pivot( pivots[sector] );
 
             if( new_i > sector+1 )
+            {
                 std::swap( arr[ pivot + 1 ], arr[new_i] );
+                Number_of_swaps++;
+            }
 
             std::swap( arr[ pivot ], arr[ pivot + 1 ] );
+            Number_of_swaps++;
             
             new_i = pivot;
             pivot += 1;
@@ -361,8 +379,11 @@ struct stack_node {
     int64_t r;
 };
 
-void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
+std::pair<int64_t,int64_t> quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
 {
+    Number_of_comparisons = 0;
+    Number_of_swaps = 0;
+
     std::stack< stack_node > stck;
     stck.push( stack_node{0, static_cast<int64_t>(arr.size() - 1) } );
 
@@ -391,6 +412,8 @@ void quicksort( std::vector< int64_t > & arr, int64_t num_pivots )
 
         stck.push( stack_node{pivots.back()+1, r} );     
     }
+
+    return std::make_pair( Number_of_comparisons, Number_of_swaps ); 
 }
 
 std::vector<int64_t> general_partition3( std::vector<int64_t> & arr, int64_t l, int64_t r, std::vector<int64_t> & pivots )
@@ -448,7 +471,7 @@ std::vector<int64_t> general_partition3( std::vector<int64_t> & arr, int64_t l, 
         ++current_pivot_index;
         
         printPivots( arr, pivots );
-        printList( arr, pivots );
+        //printList( arr, pivots );
     }
     
     return std::move( pivots );

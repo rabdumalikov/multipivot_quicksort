@@ -5,4 +5,4 @@
 
 #include <vector>
 
-void quicksort( std::vector< int64_t > & arr, int64_t num_pivots );
+std::pair<int64_t,int64_t> quicksort( std::vector< int64_t > & arr, int64_t num_pivots );

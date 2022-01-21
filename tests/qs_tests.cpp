@@ -7,6 +7,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include "qs.cpp"
+#include "qs_pivot.cpp"
 #include <iostream>
 #include <vector>
 #include <boost/range/adaptor/indexed.hpp>
@@ -406,12 +407,13 @@ TEST_CASE( "qs::range", "" )
     using namespace std;
 
     SECTION( "inside_range" ) {
-        for( int64_t np = 1; np <= 10000; ++np ) {
+    for( auto num_of_entries : { 100000} ) {
+        for( int64_t np = 1; np <= 30; ++np ) {
             double total_duration = 0.0;
             int64_t num_durations = 0;
             
-            for( int64_t i = 1; i < 30; ++i ) {
-                std::vector< int64_t > v = getRandomList( 300000 );
+            for( int64_t i = 1; i < 90; ++i ) {
+                std::vector< int64_t > v = getRandomList( num_of_entries );
 
                 std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
@@ -439,12 +441,63 @@ TEST_CASE( "qs::range", "" )
                 
             }
 
-            std::cout << "[" << np << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
+            std::cout << "[" << np << "]" << "[" << num_of_entries << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
         }
 
         REQUIRE( true );
     }
+    }
 }
+
+template< int Index >
+void ct_quicksort() 
+{
+    double total_duration = 0.0;
+    int64_t num_durations = 0;
+    
+    for( int64_t i = 1; i < 30; ++i ) {
+        std::vector< int64_t > v = getRandomList( 100000 );
+
+        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+        tmpl::quicksort<Index>( v );
+        
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+        if( !std::is_sorted( std::begin( v ), std::end( v ) ) )
+        {
+            std::cout << "Failed to sort!!!" << std::endl;
+            break;
+        }
+        
+        total_duration +=  std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+        
+        ++num_durations;
+    }
+
+    std::cout << "[" << Index << "] Time difference = " << total_duration/num_durations << "[ms]" << std::endl;
+}
+
+template< int End, int Index >
+void for_loop()
+{
+    if constexpr( End < Index ) {
+        ct_quicksort<Index>();
+        for_loop< End,Index+1 >();
+    }
+}
+
+// TEST_CASE( "qs::range2", "" ) 
+// {
+//     using namespace std;
+
+//     SECTION( "inside_range" ) {
+//         for_loop< 5, 1 >();
+
+//         REQUIRE( true );
+//     }
+// }
+
 
 // bool test_partitioning()
 // {

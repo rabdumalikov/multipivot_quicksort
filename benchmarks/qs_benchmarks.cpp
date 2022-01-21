@@ -12,6 +12,7 @@
 
 #include "benchmark/benchmark.h"
 #include "qs.cpp"
+#include "qs_pivot.cpp"
 
 void greater_benchmark(benchmark::State& state)
 {
@@ -212,6 +213,33 @@ void quicksort_5_pivot_benchmark(benchmark::State& state)
 
 BENCHMARK(quicksort_5_pivot_benchmark);
 
+
+std::vector<int64_t> getRandomList( int64_t n )
+{
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(0, n*n); // define the range
+
+    std::vector<int64_t> output;
+    output.reserve( n );
+
+    for(int64_t i=0; i<n; ++i)
+        output.push_back( distr(gen) );
+
+    return output;
+}
+
+void quicksort2_2_pivot_benchmark(benchmark::State& state)
+{
+    while (state.KeepRunning()) {
+        std::vector< int64_t > values = getRandomList( 100000 );
+
+        tmpl::quicksort<1>( values );            
+        benchmark::DoNotOptimize(values);
+    }
+}
+
+BENCHMARK(quicksort2_2_pivot_benchmark);
 
 
 BENCHMARK_MAIN();
